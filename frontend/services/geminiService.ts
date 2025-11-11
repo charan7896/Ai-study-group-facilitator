@@ -5,13 +5,14 @@ let ai: GoogleGenAI;
 
 // Initialize the AI client on-demand to prevent app crash on load if API key is missing.
 const getAIClient = () => {
-    if (!process.env.API_KEY) {
+    const apiKey = import.meta.env.VITE_API_KEY;
+    if (!apiKey) {
         throw new Error(
-            'Gemini API key not found. Please add an API_KEY to your .env file in the `frontend` directory and restart the server.'
+            'Gemini API key not found. Please add VITE_API_KEY to your .env file in the `frontend` directory (e.g., VITE_API_KEY=your_key_here) and restart the server.'
         );
     }
     if (!ai) {
-        ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        ai = new GoogleGenAI({ apiKey });
     }
     return ai;
 };
