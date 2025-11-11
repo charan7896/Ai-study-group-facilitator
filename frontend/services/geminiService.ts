@@ -5,12 +5,29 @@ let ai: GoogleGenAI;
 
 // Initialize the AI client on-demand to prevent app crash on load if API key is missing.
 const getAIClient = () => {
-    const apiKey = import.meta.env.VITE_API_KEY;
+    // Prefer Vite-injected variable for client builds
+    let apiKey: string | undefined = import.meta.env.VITE_API_KEY;
+
+    // Fallback: if the repo still uses `API_KEY` in a local .env (no VITE_ prefix),
+    // try to read it from process.env when running in Node (dev servers/tests).
+    if (!apiKey) {
+        try {
+            // Use globalThis to avoid TypeScript errors about `process` not existing in the browser.
+            const maybeProcess = (globalThis as any).process;
+            if (maybeProcess && maybeProcess.env && maybeProcess.env.API_KEY) {
+                apiKey = maybeProcess.env.API_KEY;
+            }
+        } catch (e) {
+            // ignore
+        }
+    }
+
     if (!apiKey) {
         throw new Error(
-            'Gemini API key not found. Please add VITE_API_KEY to your .env file in the `frontend` directory (e.g., VITE_API_KEY=your_key_here) and restart the server.'
+            'Gemini API key not found. Please add VITE_API_KEY to your .env file in the `frontend` directory (e.g., VITE_API_KEY=your_key_here) or set API_KEY in your environment and restart the server.'
         );
     }
+
     if (!ai) {
         ai = new GoogleGenAI({ apiKey });
     }
