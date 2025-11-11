@@ -1,6 +1,6 @@
 import { User, Student, Group, ChatMessage } from '../types';
 
-const API_BASE_URL = 'http://localhost:5001/api'; // Your backend server URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ai-study-group-facilitator-backend.onrender.com/api'; // Your backend server URL
 
 // Helper function for making API requests
 const apiRequest = async <T,>(url: string, options: RequestInit = {}): Promise<T> => {
