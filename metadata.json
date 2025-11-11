@@ -1,0 +1,5 @@
+{
+  "name": "AI Study Group Facilitator",
+  "description": "An Agentic AI facilitator that uses student data (academic needs, schedules, courses) to form optimal study groups, project teams, and peer tutoring connections.",
+  "requestFramePermissions": []
+}
