@@ -1,6 +1,16 @@
 import { User, Student, Group, ChatMessage } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ai-study-group-facilitator-backend.onrender.com/api'; // Your backend server URL
+// Normalize the API base URL so the env value may be provided with or without a trailing
+// `/api` segment. This prevents duplication like `.../api/api` if VITE_API_BASE_URL already
+// includes `/api`.
+const rawEnvBase = import.meta.env.VITE_API_BASE_URL?.trim();
+let API_BASE_URL: string;
+if (!rawEnvBase || rawEnvBase === '') {
+    API_BASE_URL = 'https://ai-study-group-facilitator-backend.onrender.com/api';
+} else {
+    const base = rawEnvBase.replace(/\/+$/g, ''); // remove trailing slashes
+    API_BASE_URL = base.endsWith('/api') ? base : `${base}/api`;
+}
 
 // Helper function for making API requests
 const apiRequest = async <T,>(url: string, options: RequestInit = {}): Promise<T> => {
